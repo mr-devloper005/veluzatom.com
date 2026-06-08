@@ -1,58 +1,59 @@
 'use client'
 
 import Link from 'next/link'
-import type { CSSProperties } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import { SITE_CONFIG } from '@/lib/site-config'
 import { globalContent } from '@/editable/content/global.content'
 import { useEditableLocalAuthSession } from '@/editable/components/EditableLocalAuthForms'
 
 export function EditableFooter() {
-  const footerVars = { '--editable-footer-bg': 'var(--editable-page-bg, #fffaf3)', '--editable-footer-text': 'var(--editable-page-text, #241915)' } as CSSProperties
   const taskLinks = SITE_CONFIG.tasks.filter((task) => task.enabled)
-  const year = new Date().getFullYear()
   const { session, logout } = useEditableLocalAuthSession()
+  const year = new Date().getFullYear()
 
   return (
-    <footer style={footerVars} className="border-t border-[var(--editable-border)] bg-[var(--editable-footer-bg)] text-[var(--editable-footer-text)]">
-      <div className="mx-auto grid max-w-[var(--editable-container)] gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.2fr_1fr_1fr] lg:px-8">
-        <div>
-          <Link href="/" className="inline-flex items-center gap-3">
-            <span className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border border-[var(--editable-border)] bg-white">
-              <img src="/favicon.png?v=20260413" alt={SITE_CONFIG.name} className="h-9 w-9 object-contain" />
-            </span>
-            <span className="text-lg font-black tracking-[-0.04em]">{SITE_CONFIG.name}</span>
-          </Link>
-          <p className="mt-4 max-w-md text-sm leading-7 opacity-70">{globalContent.footer?.description || SITE_CONFIG.description}</p>
-        </div>
-
-        <div>
-          <h3 className="text-xs font-black uppercase tracking-[0.22em] opacity-55">Explore</h3>
-          <div className="mt-4 grid gap-2">
-            {taskLinks.map((task) => (
-              <Link key={task.key} href={task.route} className="inline-flex items-center gap-2 text-sm font-bold opacity-75 hover:opacity-100">
-                {task.label} <ArrowUpRight className="h-3.5 w-3.5" />
-              </Link>
-            ))}
+    <footer className="border-t border-white/10 bg-[var(--slot4-dark-bg)] text-[var(--slot4-dark-text)]">
+      <div className="editable-mosaic mx-auto max-w-[var(--editable-container)] px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid gap-6 lg:grid-cols-3">
+          <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-8">
+            <Link href="/" className="inline-flex items-center gap-4">
+              <span className="flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-white">
+                <img src="/favicon.png?v=20260413" alt={SITE_CONFIG.name} className="h-9 w-9 object-contain" />
+              </span>
+              <span>
+                <span className="block text-sm font-black uppercase tracking-[0.24em]">{SITE_CONFIG.name}</span>
+                <span className="block text-[10px] font-black uppercase tracking-[0.28em] text-white/45">{globalContent.footer.tagline}</span>
+              </span>
+            </Link>
+            <p className="mt-6 max-w-md text-sm leading-7 text-white/68">{globalContent.footer.description}</p>
           </div>
-        </div>
 
-        <div>
-          <h3 className="text-xs font-black uppercase tracking-[0.22em] opacity-55">Site</h3>
-          <div className="mt-4 grid gap-2">
-            {[
-              ['About', '/about'],
-              ['Contact', '/contact'],
-              ...(session ? [['Create', '/create']] : [['Login', '/login'], ['Sign up', '/signup']]),
-            ].map(([label, href]) => (
-              <Link key={href} href={href} className="text-sm font-bold opacity-75 hover:opacity-100">{label}</Link>
-            ))}
-            {session ? <button type="button" onClick={logout} className="text-left text-sm font-bold opacity-75 hover:opacity-100">Logout</button> : null}
+          <div className="rounded-[2rem] border border-white/10 bg-white/[0.03] p-8">
+            <h3 className="text-3xl font-black uppercase leading-[0.95] tracking-[-0.04em]">Explore</h3>
+            <div className="mt-6 grid gap-3">
+              {taskLinks.map((task) => (
+                <Link key={task.key} href={task.route} className="inline-flex items-center justify-between gap-3 border-b border-white/10 py-3 text-sm font-black uppercase tracking-[0.14em] text-white/80 transition hover:text-white">
+                  {task.label}
+                  <ArrowUpRight className="h-4 w-4" />
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-white/10 bg-[#546b41] p-8 text-white">
+            <p className="text-[10px] font-black uppercase tracking-[0.28em] text-white/70">Site links</p>
+            <div className="mt-6 grid gap-3 text-sm font-black uppercase tracking-[0.14em]">
+              <Link href="/about">About</Link>
+              <Link href="/contact">Contact</Link>
+              {session ? <Link href="/create">Studio</Link> : <Link href="/login">Log in</Link>}
+              {!session ? <Link href="/signup">Create account</Link> : <button type="button" onClick={logout} className="text-left">Log out</button>}
+            </div>
+            <p className="mt-10 text-sm leading-7 text-white/78">{globalContent.footer.bottomNote}</p>
           </div>
         </div>
       </div>
-      <div className="border-t border-[var(--editable-border)] px-4 py-5 text-center text-xs font-bold opacity-55">
-        © {year} {SITE_CONFIG.name}. All rights reserved.
+      <div className="border-t border-white/10 px-4 py-5 text-center text-xs font-black uppercase tracking-[0.18em] text-white/50">
+        © {year} {SITE_CONFIG.name}
       </div>
     </footer>
   )
